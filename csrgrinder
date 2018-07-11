@@ -32,7 +32,7 @@ fi
 logger "csrgrinder ${VERSION} Wrote $(stat -f%z $CSRFILE) bytes CSR from client $SSH_CLIENT to temp file $CSRFILE (running in $MODE mode)"
 
 # get the directory we are running from
-BASEPATH=$(realpath $0 | rev | cut -d "/" -f 2- | rev)
+BASEPATH=$(dirname "$(realpath "$0")")
 
 # define some defaults
 : ${AUTHHOOK:="${BASEPATH}/manual-auth-hook"}
