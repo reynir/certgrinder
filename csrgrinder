@@ -7,10 +7,17 @@
 ####################################################
 VERSION="v0.10.2"
 
+CSR_MAX_LENGTH=$(10*1024*1024) # 10 MiB
+
 # get CSR from stdin and write to a temp file
-STDIN=$(cat)
 CSRFILE=$(mktemp)
-echo "$STDIN" > $CSRFILE
+head -c "$CSR_MAX_LENGTH" > "$CSRFILE"
+if [ "$(head -c 1 | wc -c)" -gt 0 ]; then
+    logger "Received a CSR longer than ${CSR_MAX_LENGTH} bytes. Aborting..."
+    rm -f -- "$CSRFILE"
+    exit 1
+fi
+
 
 # are we in testmode? get args from $SSH_ORIGINAL_COMMAND
 set -- $SSH_ORIGINAL_COMMAND
